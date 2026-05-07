@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   Admin theme: Sidebar escura + conteúdo claro
+   ========================================================= */
+
+@layer base {
+  /* Fundo geral do admin (miolo claro) */
+  .admin-shell {
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 55%, #f1f5f9 100%);
+    color: #0f172a;
+    min-height: 100vh;
+  }
+
+  /* Área do conteúdo (cards claros) */
+  .admin-main {
+    color: #0f172a;
+  }
+}
+
+@layer components {
+  /* Card padrão do conteúdo */
+  .admin-card {
+    @apply rounded-2xl border border-slate-200/80 bg-white/85 shadow-lg backdrop-blur;
+  }
+
+  /* Título e subtítulo */
+  .admin-title {
+    @apply text-2xl font-semibold text-slate-900;
+  }
+  .admin-subtitle {
+    @apply text-sm text-slate-600;
+  }
+
+  /* Inputs claros */
+  .admin-input {
+    @apply w-full rounded-xl border border-slate-300/80 bg-white px-3 py-2 text-slate-900 outline-none;
+  }
+  .admin-input:focus {
+    @apply ring-4 ring-indigo-500/15 border-indigo-400;
+  }
+
+  /* Botões */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-white shadow hover:bg-indigo-500;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-slate-800 hover:bg-slate-50;
+  }
+}
+
+.page-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:28px;
+}
+
+.page-header-left{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.page-title{
+font-size:28px;
+font-weight:700;
+letter-spacing:-0.3px;
+color:#0f172a;
+margin:0;
+}
+
+.page-subtitle{
+font-size:14px;
+color:#64748b;
+margin:0;
+}
+
+.page-header-actions{
+display:flex;
+gap:10px;
+}
+
+.section-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:16px;
+}
+
+.section-title{
+font-size:16px;
+font-weight:600;
+color:#0f172a;
+}
+
+.section-subtitle{
+font-size:13px;
+color:#64748b;
+margin-top:2px;
+}

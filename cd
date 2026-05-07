@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ $issuance->badge->title }} — Autenticação | ESAOABSP</title>
+
+    {{-- Open Graph (pra ficar bonito ao compartilhar) --}}
+    <meta property="og:title" content="{{ $issuance->badge->title }} — ESAOABSP" />
+    <meta property="og:description" content="Página de autenticidade da badge emitida pela ESAOABSP." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request()->fullUrl() }}" />
+
+    <link rel="stylesheet" href="/assets/public.css">
+</head>
+<body>
+<header class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+            <div class="brand-dot"></div>
+            <strong>ESAOABSP Badges</strong>
+        </div>
+
+        <div class="topbar-actions">
+            <button class="btn ghost" onclick="window.print()">Imprimir</button>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    <section class="hero card">
+        <div class="hero-left">
+            <div class="badge-image">
+                @if(!empty($issuance->badge->image_path))
+                    <img src="{{ asset('storage/'.$issuance->badge->image_path) }}" alt="Badge {{ $issuance->badge->title }}">
+                @else
+                    <div class="badge-placeholder">
+                        <div class="badge-ring"></div>
+                        <div class="badge-title">{{ $issuance->badge->title }}</div>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="hero-mid">
+            <div class="meta-label">EMITIDA PARA:</div>
+            <h1 class="recipient">{{ $issuance->recipient_name }}</h1>
+
+            <p class="desc">{{ $issuance->badge->description }}</p>
+
+            <div class="verified">
+                <div class="check">✓</div>
+                <div>
+                    <div class="verified-title">{{ $issuance->is_revoked ? 'Revogada' : 'Verificada' }}</div>
+                    <div class="verified-sub">
+                        @if($issuance->is_revoked)
+                            Revogada em {{ optional($issuance->revoked_at)->format('d/m/Y') }}
+                        @else
+                            Emitida em {{ $issuance->issued_on->format('d/m/Y') }}
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-buttons">
+                <a class="btn" href="{{ route('public.badge.show', $issuance->public_id) }}">Revalidar</a>
+                <button class="btn ghost" onclick="navigator.clipboard.writeText(window.location.href)">Copiar link</button>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="meta-label">EMITIDA POR:</div>
+            <div class="issuer">
+                <div class="issuer-logo">ESA</div>
+                <div>
+                    <div class="issuer-name">Escola Superior de Advocacia — OABSP</div>
+                    <div class="issuer-date">{{ $issuance->issued_on->format('d F Y') }}</div>
+                </div>
+            </div>
+
+            <div class="meta-label" style="margin-top:18px;">COMPARTILHAR:</div>
+            <div class="share">
+                @php $url = urlencode(request()->fullUrl()); @endphp
+                <a class="share-btn" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url={{ $url }}">in</a>
+                <a class="share-btn" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u={{ $url }}">f</a>
+                <a class="share-btn" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url={{ $url }}">x</a>
+                <a class="share-btn" target="_blank" rel="noopener" href="mailto:?subject=Badge%20ESAOABSP&body={{ $url }}">@</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="card grid">
+        <div class="grid-row">
+            <div class="grid-label">CRITÉRIOS</div>
+            <div class="grid-value">
+                {!! nl2br(e($issuance->criteria ?? ($issuance->badge->criteria ?? '—'))) !!}
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="grid-label">ATRIBUTOS</div>
+            <div class="grid-value pills">
+                <span class="pill">Carga horária: {{ $issuance->total_hours ?: $issuance->badge->hours }}h</span>
+                @if(!empty($issuance->badge->code))
+                    <span class="pill">Código: {{ $issuance->badge->code }}</span>
+                @endif
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="grid-label">CURSOS</div>
+            <div class="grid-value">
+                @if(!empty($issuance->courses))
+                    <ul class="list">
+                        @foreach($issuance->courses as $c)
+                            <li>{{ $c }}</li>
+                        @endforeach
+                    </ul>
+                @else
+                    —
+                @endif
+            </div>
+        </div>
+
+        <div class="grid-row">
+            <div class="grid-label">SKILLS</div>
+            <div class="grid-value pills">
+                @php
+                    $skills = $issuance->skills ?: ($issuance->badge->skills ?? []);
+                @endphp
+                @if(!empty($skills))
+                    @foreach($skills as $s)
+                        <span class="pill">{{ $s }}</span>
+                    @endforeach
+                @else
+                    —
+                @endif
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <small>Esta página comprova a autenticidade da badge. ID público: <strong>{{ $issuance->public_id }}</strong></small>
+    </footer>
+</main>
+</body>
+</html>
